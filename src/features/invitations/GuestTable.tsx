@@ -21,10 +21,10 @@ export function GuestTable({
 }: {
   guests: Guest[];
   invitationTitle: string;
-  selectedId?: string | null;
-  onSelect?: (guest: Guest) => void;
-  showMobile?: boolean;
-  compact?: boolean;
+  selectedId?: string | null | undefined;
+  onSelect?: ((guest: Guest) => void) | undefined;
+  showMobile?: boolean | undefined;
+  compact?: boolean | undefined;
 }) {
   const qc = useQueryClient();
   const remove = useMutation({

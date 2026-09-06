@@ -55,9 +55,9 @@ export function AppShell({
   variant: "admin" | "customer";
   items: NavItem[];
   userName: string;
-  userSubtitle?: string;
+  userSubtitle?: string | undefined;
   children: ReactNode;
-  sidebarFooter?: ReactNode;
+  sidebarFooter?: ReactNode | undefined;
 }) {
   const navigate = useNavigate();
   const queryClient = useQueryClient();

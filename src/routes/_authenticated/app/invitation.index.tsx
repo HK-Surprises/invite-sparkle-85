@@ -29,7 +29,7 @@ function MyInvitationPage() {
   const [filter, setFilter] = useState<"all" | "opened" | "not_opened">("all");
 
   const selected = guests.find((g) => g.id === search.guest) ?? guests[0] ?? null;
-  const select = (g: Guest) => navigate({ to: "/app/invitation", search: { inv: search.inv, guest: g.id }, replace: true });
+  const select = (g: Guest) => navigate({ to: "/app/invitation", search: (prev) => ({ ...prev, guest: g.id }), replace: true });
 
   const filtered = useMemo(
     () =>

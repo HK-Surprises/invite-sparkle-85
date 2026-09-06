@@ -42,7 +42,7 @@ function LinksPage() {
         actions={
           <>
             <InvitationSwitcher invitations={invitations} current={invitation} to="/app/links" />
-            <Select value={guest.id} onValueChange={(v) => navigate({ to: "/app/links", search: { inv: search.inv, guest: v } })}>
+            <Select value={guest.id} onValueChange={(v) => navigate({ to: "/app/links", search: (prev) => ({ ...prev, guest: v }) })}>
               <SelectTrigger className="w-60 rounded-xl">
                 <SelectValue />
               </SelectTrigger>
