@@ -1,0 +1,11 @@
+REVOKE EXECUTE ON FUNCTION public.has_role(UUID, public.app_role) FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.is_admin() FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.current_customer_id() FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.generate_invitation_token(INTEGER) FROM PUBLIC, anon, authenticated;
+REVOKE EXECUTE ON FUNCTION public.add_guest(UUID, TEXT, TEXT, TEXT, INTEGER) FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.resolve_invitation(TEXT, BOOLEAN) FROM PUBLIC, authenticated;
+REVOKE EXECUTE ON FUNCTION public.set_updated_at() FROM PUBLIC, anon, authenticated;
+GRANT EXECUTE ON FUNCTION public.is_admin() TO authenticated;
+GRANT EXECUTE ON FUNCTION public.current_customer_id() TO authenticated;
+GRANT EXECUTE ON FUNCTION public.add_guest(UUID, TEXT, TEXT, TEXT, INTEGER) TO authenticated;
+GRANT EXECUTE ON FUNCTION public.resolve_invitation(TEXT, BOOLEAN) TO anon, authenticated;
