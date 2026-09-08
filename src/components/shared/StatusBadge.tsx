@@ -18,6 +18,8 @@ const labels: Record<string, string> = {
   opened: "Opened",
   not_opened: "Not opened",
   expired: "Expired",
+  sent: "Sent",
+  pending: "Pending",
 };
 
 export function StatusBadge({ status, className }: { status: string; className?: string }) {
