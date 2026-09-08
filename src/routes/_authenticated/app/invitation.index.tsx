@@ -78,36 +78,73 @@ function MyInvitationPage() {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
         <StatsCard label="Total guests" value={guests.length} icon={Users} tone="lavender" />
-        <StatsCard label="Personalized invitations" value={guests.length} icon={Mail} tone="peach" />
+        <StatsCard label="Sent" value={sent} icon={Send} tone="sky" />
+        <StatsCard label="Pending" value={pending} icon={Clock} tone="peach" />
         <StatsCard label="Opened" value={opened} icon={Eye} tone="sage" />
         <StatsCard label="Not opened" value={guests.length - opened} icon={EyeOff} tone="rose" />
       </div>
 
       <div className="grid gap-6 xl:grid-cols-[1fr_420px]">
         <section className="card-elevated overflow-hidden">
-          <div className="flex flex-col gap-3 border-b p-4 md:flex-row md:items-center md:justify-between">
-            <h2 className="font-display text-2xl">Guest invitations</h2>
-            <div className="flex flex-wrap items-center gap-2">
-              <div className="relative">
-                <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                <Input placeholder="Search guests…" className="w-56 rounded-xl pl-9" value={q} onChange={(e) => setQ(e.target.value)} />
+          <div className="flex flex-col gap-4 border-b p-4">
+            <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <h2 className="font-display text-2xl">Guest invitations</h2>
+              <div className="flex flex-wrap items-center gap-2">
+                <div className="relative">
+                  <Search className="absolute top-1/2 left-3 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                  <Input placeholder="Search guests…" className="w-56 rounded-xl pl-9" value={q} onChange={(e) => setQ(e.target.value)} />
+                </div>
+                <Select value={filter} onValueChange={(v) => setFilter(v as typeof filter)}>
+                  <SelectTrigger className="w-36 rounded-xl">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All guests</SelectItem>
+                    <SelectItem value="opened">Opened</SelectItem>
+                    <SelectItem value="not_opened">Not opened</SelectItem>
+                  </SelectContent>
+                </Select>
+                <Select value={sort} onValueChange={(v) => setSort(v as typeof sort)}>
+                  <SelectTrigger className="w-40 rounded-xl">
+                    <ArrowDownAZ className="h-4 w-4 text-muted-foreground" />
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="default">Default order</SelectItem>
+                    <SelectItem value="az">Name A → Z</SelectItem>
+                    <SelectItem value="za">Name Z → A</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
-              <Select value={filter} onValueChange={(v) => setFilter(v as typeof filter)}>
-                <SelectTrigger className="w-36 rounded-xl">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All guests</SelectItem>
-                  <SelectItem value="opened">Opened</SelectItem>
-                  <SelectItem value="not_opened">Not opened</SelectItem>
-                </SelectContent>
-              </Select>
-              <Button variant="outline" size="sm" disabled title="Bulk actions arrive in a future update">
-                Bulk actions
-              </Button>
             </div>
+            <div className="flex flex-wrap gap-2">
+              {(
+                [
+                  { key: "pending", label: "Pending", count: pending, icon: Clock, tone: "bg-peach text-peach-foreground" },
+                  { key: "sent", label: "Sent", count: sent, icon: Send, tone: "bg-sky text-sky-foreground" },
+                ] as const
+              ).map((t) => (
+                <button
+                  key={t.key}
+                  type="button"
+                  onClick={() => setTab(t.key)}
+                  className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-all ${
+                    tab === t.key ? `${t.tone} border-transparent shadow-sm` : "border-border bg-background text-muted-foreground hover:bg-muted/60"
+                  }`}
+                >
+                  <t.icon className="h-4 w-4" />
+                  {t.label}
+                  <span className="rounded-full bg-background/70 px-2 py-0.5 text-xs font-semibold">{t.count}</span>
+                </button>
+              ))}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {tab === "pending"
+                ? "These guests still need their invitation sent. Sharing a guest moves them to Sent — the link never changes."
+                : "You have already shared these invitations. Opened and Not opened is tracked separately."}
+            </p>
           </div>
           {isLoading ? (
             <TableSkeleton />
