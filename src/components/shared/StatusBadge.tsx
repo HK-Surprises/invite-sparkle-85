@@ -7,6 +7,8 @@ const styles: Record<string, string> = {
   opened: "bg-sage text-sage-foreground",
   not_opened: "bg-lavender text-lavender-foreground",
   expired: "bg-rose text-rose-foreground",
+  sent: "bg-sky text-sky-foreground",
+  pending: "bg-peach text-peach-foreground",
 };
 
 const labels: Record<string, string> = {

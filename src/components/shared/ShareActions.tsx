@@ -36,29 +36,38 @@ export async function nativeShare(guest: Pick<Guest, "name" | "token">, title: s
   if (typeof navigator !== "undefined" && navigator.share) {
     try {
       await navigator.share({ title, text, url });
-      return;
+      return true;
     } catch {
       /* user cancelled */
-      return;
+      return false;
     }
   }
   window.open(whatsappShareUrl(text, null), "_blank", "noopener");
+  return true;
 }
 
-export function ShareButton({ guest, title, size = "sm", variant = "default", label = "Share", ...rest }: { guest: Pick<Guest, "name" | "token">; title: string; label?: string } & ButtonProps) {
+export function ShareButton({ guest, title, size = "sm", variant = "default", label = "Share", onShared, ...rest }: { guest: Pick<Guest, "name" | "token">; title: string; label?: string; onShared?: (() => void) | undefined } & ButtonProps) {
   return (
-    <Button size={size} variant={variant} onClick={() => nativeShare(guest, title)} {...rest}>
+    <Button
+      size={size}
+      variant={variant}
+      onClick={async () => {
+        const shared = await nativeShare(guest, title);
+        if (shared) onShared?.();
+      }}
+      {...rest}
+    >
       <Share2 />
       {label}
     </Button>
   );
 }
 
-export function WhatsAppButton({ guest, title, size = "sm", ...rest }: { guest: Pick<Guest, "name" | "token" | "mobile">; title: string } & ButtonProps) {
+export function WhatsAppButton({ guest, title, size = "sm", onShared, ...rest }: { guest: Pick<Guest, "name" | "token" | "mobile">; title: string; onShared?: (() => void) | undefined } & ButtonProps) {
   const url = invitationUrl(guest.token);
   return (
     <Button size={size} variant="whatsapp" asChild {...rest}>
-      <a href={whatsappShareUrl(shareMessage(guest.name, title, url), guest.mobile)} target="_blank" rel="noopener noreferrer">
+      <a href={whatsappShareUrl(shareMessage(guest.name, title, url), guest.mobile)} target="_blank" rel="noopener noreferrer" onClick={() => onShared?.()}>
         <MessageCircle />
         WhatsApp
       </a>
