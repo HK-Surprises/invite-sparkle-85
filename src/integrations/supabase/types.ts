@@ -145,6 +145,8 @@ export type Database = {
           mobile: string | null
           name: string
           people_count: number
+          send_status: string
+          sent_at: string | null
           status: string
           token: string
         }
@@ -157,6 +159,8 @@ export type Database = {
           mobile?: string | null
           name: string
           people_count?: number
+          send_status?: string
+          sent_at?: string | null
           status?: string
           token: string
         }
@@ -169,6 +173,8 @@ export type Database = {
           mobile?: string | null
           name?: string
           people_count?: number
+          send_status?: string
+          sent_at?: string | null
           status?: string
           token?: string
         }
@@ -421,6 +427,8 @@ export type Database = {
           mobile: string | null
           name: string
           people_count: number
+          send_status: string
+          sent_at: string | null
           status: string
           token: string
         }

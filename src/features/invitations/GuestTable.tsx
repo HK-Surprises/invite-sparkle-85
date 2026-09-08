@@ -1,11 +1,23 @@
-import { Eye, MoreHorizontal, Trash2 } from "lucide-react";
+import { Eye, MoreHorizontal, Send, Trash2, Undo2 } from "lucide-react";
+import { useState } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { StatusBadge } from "@/components/shared/StatusBadge";
 import { CopyLinkButton, ShareButton, WhatsAppButton } from "@/components/shared/ShareActions";
+import { useSendStatus } from "@/features/invitations/useSendStatus";
 import { supabase } from "@/integrations/supabase/client";
 import { cn } from "@/lib/utils";
 import { timeAgo, initials } from "@/lib/format";
@@ -27,6 +39,8 @@ export function GuestTable({
   compact?: boolean | undefined;
 }) {
   const qc = useQueryClient();
+  const sendStatus = useSendStatus();
+  const [toPending, setToPending] = useState<Guest | null>(null);
   const remove = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("guests").delete().eq("id", id);
@@ -75,7 +89,10 @@ export function GuestTable({
               <TableCell className="text-muted-foreground">{g.group_name ?? "—"}</TableCell>
               <TableCell className="text-center">{g.people_count}</TableCell>
               <TableCell>
-                <StatusBadge status={g.status} />
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <StatusBadge status={g.send_status === "sent" ? "sent" : "pending"} />
+                  <StatusBadge status={g.status} />
+                </div>
               </TableCell>
               <TableCell className="text-muted-foreground">{g.last_viewed_at ? timeAgo(g.last_viewed_at) : "—"}</TableCell>
               <TableCell className="text-right" onClick={(e) => e.stopPropagation()}>
@@ -86,7 +103,14 @@ export function GuestTable({
                     </Button>
                   )}
                   <CopyLinkButton token={g.token} label="Copy" />
-                  <ShareButton guest={g} title={invitationTitle} variant="soft" />
+                  <ShareButton
+                    guest={g}
+                    title={invitationTitle}
+                    variant="soft"
+                    onShared={() => {
+                      if (g.send_status !== "sent") sendStatus.mutate({ id: g.id, status: "sent", name: g.name });
+                    }}
+                  />
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button size="icon" variant="ghost" className="h-8 w-8" aria-label="More">
@@ -101,9 +125,26 @@ export function GuestTable({
                       </DropdownMenuItem>
                       <DropdownMenuItem asChild>
                         <div>
-                          <WhatsAppButton guest={g} title={invitationTitle} variant="ghost" className="h-auto w-full justify-start bg-transparent p-0 text-foreground shadow-none hover:bg-transparent" />
+                          <WhatsAppButton
+                            guest={g}
+                            title={invitationTitle}
+                            variant="ghost"
+                            className="h-auto w-full justify-start bg-transparent p-0 text-foreground shadow-none hover:bg-transparent"
+                            onShared={() => {
+                              if (g.send_status !== "sent") sendStatus.mutate({ id: g.id, status: "sent", name: g.name });
+                            }}
+                          />
                         </div>
                       </DropdownMenuItem>
+                      {g.send_status === "sent" ? (
+                        <DropdownMenuItem onClick={() => setToPending(g)}>
+                          <Undo2 /> Mark as pending
+                        </DropdownMenuItem>
+                      ) : (
+                        <DropdownMenuItem onClick={() => sendStatus.mutate({ id: g.id, status: "sent", name: g.name })}>
+                          <Send /> Mark as sent
+                        </DropdownMenuItem>
+                      )}
                       <DropdownMenuItem className="text-destructive" onClick={() => remove.mutate(g.id)}>
                         <Trash2 /> Remove guest
                       </DropdownMenuItem>
@@ -115,6 +156,28 @@ export function GuestTable({
           ))}
         </TableBody>
       </Table>
+
+      <AlertDialog open={!!toPending} onOpenChange={(o) => !o && setToPending(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Move {toPending?.name} back to Pending?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Their invitation link stays exactly the same and their opened history is kept. They will simply move back to your “still to send” list.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (toPending) sendStatus.mutate({ id: toPending.id, status: "pending", name: toPending.name });
+                setToPending(null);
+              }}
+            >
+              Move to Pending
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

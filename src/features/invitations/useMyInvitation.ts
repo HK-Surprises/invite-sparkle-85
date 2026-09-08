@@ -22,6 +22,8 @@ export function useMyInvitation(selectedId?: string) {
     limit,
     remaining: Math.max(limit - used, 0),
     opened: guests.data?.filter((g) => g.status === "opened").length ?? 0,
+    sent: guests.data?.filter((g) => g.send_status === "sent").length ?? 0,
+    pending: guests.data?.filter((g) => g.send_status !== "sent").length ?? 0,
   };
 }
 
