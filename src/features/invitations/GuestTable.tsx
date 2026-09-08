@@ -137,7 +137,7 @@ export function GuestTable({
                         </div>
                       </DropdownMenuItem>
                       {g.send_status === "sent" ? (
-                        <DropdownMenuItem onClick={() => sendStatus.mutate({ id: g.id, status: "pending", name: g.name })}>
+                        <DropdownMenuItem onClick={() => setToPending(g)}>
                           <Undo2 /> Mark as pending
                         </DropdownMenuItem>
                       ) : (
@@ -156,6 +156,28 @@ export function GuestTable({
           ))}
         </TableBody>
       </Table>
+
+      <AlertDialog open={!!toPending} onOpenChange={(o) => !o && setToPending(null)}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Move {toPending?.name} back to Pending?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Their invitation link stays exactly the same and their opened history is kept. They will simply move back to your “still to send” list.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => {
+                if (toPending) sendStatus.mutate({ id: toPending.id, status: "pending", name: toPending.name });
+                setToPending(null);
+              }}
+            >
+              Move to Pending
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
