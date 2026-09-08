@@ -40,6 +40,7 @@ export function GuestTable({
 }) {
   const qc = useQueryClient();
   const sendStatus = useSendStatus();
+  const [toPending, setToPending] = useState<Guest | null>(null);
   const remove = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("guests").delete().eq("id", id);
