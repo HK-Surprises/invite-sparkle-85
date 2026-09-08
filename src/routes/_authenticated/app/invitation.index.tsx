@@ -24,22 +24,26 @@ export const Route = createFileRoute("/_authenticated/app/invitation/")({
 function MyInvitationPage() {
   const search = Route.useSearch();
   const navigate = useNavigate();
-  const { invitation, invitations, guests, isLoading, remaining, opened } = useMyInvitation(search.inv);
+  const { invitation, invitations, guests, isLoading, remaining, opened, sent, pending } = useMyInvitation(search.inv);
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState<"all" | "opened" | "not_opened">("all");
+  const [tab, setTab] = useState<"sent" | "pending">("pending");
+  const [sort, setSort] = useState<"default" | "az" | "za">("default");
 
   const selected = guests.find((g) => g.id === search.guest) ?? guests[0] ?? null;
   const select = (g: Guest) => navigate({ to: "/app/invitation", search: (prev) => ({ ...prev, guest: g.id }), replace: true });
 
-  const filtered = useMemo(
-    () =>
-      guests.filter((g) => {
-        if (filter !== "all" && g.status !== filter) return false;
-        const needle = q.trim().toLowerCase();
-        return !needle || g.name.toLowerCase().includes(needle) || (g.group_name ?? "").toLowerCase().includes(needle);
-      }),
-    [guests, q, filter],
-  );
+  const filtered = useMemo(() => {
+    const list = guests.filter((g) => {
+      const isSent = g.send_status === "sent";
+      if (tab === "sent" ? !isSent : isSent) return false;
+      if (filter !== "all" && g.status !== filter) return false;
+      const needle = q.trim().toLowerCase();
+      return !needle || g.name.toLowerCase().includes(needle) || (g.group_name ?? "").toLowerCase().includes(needle);
+    });
+    if (sort === "default") return list;
+    return [...list].sort((a, b) => (sort === "az" ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name)));
+  }, [guests, q, filter, tab, sort]);
 
   if (isLoading && !invitation) return <PageSkeleton />;
 
