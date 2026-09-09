@@ -11,3 +11,9 @@
 - [x] 9. My Invitation per-guest preview, copy/share/QR, Links page
 - [x] 10. Analytics, admin invitations, settings, dashboards
 - [x] 11. End-to-end test
+
+## Premium template upgrade (Sep 2026)
+- [x] Royal Prestige, Rose Gold Blush, Emerald Royale interactive templates
+- [x] Metadata-driven template registry (add folder + one entry)
+- [x] Older basic designs deactivated; existing invitations migrated
+- [x] Customer gallery with live preview

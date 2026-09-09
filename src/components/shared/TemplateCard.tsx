@@ -29,9 +29,12 @@ export function TemplateCard({
   return (
     <div className={cn("card-elevated group flex flex-col overflow-hidden transition-shadow hover:shadow-card", selected && "ring-2 ring-primary", className)}>
       <div className="relative bg-muted/60 p-4 pb-0">
-        <div className="pointer-events-none overflow-hidden rounded-t-2xl">
-          <InvitationPreview componentKey={componentKey} title={sample.title} data={sample.data} guestName="Amit" frame={false} className="max-h-64" />
+        <div className="pointer-events-none h-64 overflow-hidden rounded-t-2xl">
+          <div className="-translate-y-[16%]">
+            <InvitationPreview componentKey={componentKey} title={sample.title} data={sample.data} guestName="Amit" frame={false} />
+          </div>
         </div>
+
         {isActive === false && (
           <div className="absolute top-3 right-3">
             <StatusBadge status="inactive" />

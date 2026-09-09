@@ -309,3 +309,79 @@
   &::before { top: 0.9rem; left: 0.9rem; border-right: 0; border-bottom: 0; border-top-left-radius: 2rem; }
   &::after { bottom: 0.9rem; right: 0.9rem; border-left: 0; border-top: 0; border-bottom-right-radius: 2rem; }
 }
+
+/* ---------- Premium interactive invitation templates ---------- */
+.tpl-royal {
+  --tpl-bg: oklch(0.22 0.07 25);
+  --tpl-surface: oklch(0.97 0.02 85);
+  --tpl-fg: oklch(0.96 0.02 85);
+  --tpl-muted: oklch(0.82 0.03 80);
+  --tpl-accent: oklch(0.82 0.13 85);
+  --tpl-accent-soft: oklch(0.35 0.09 25);
+}
+.tpl-rosegold {
+  --tpl-bg: oklch(0.96 0.02 30);
+  --tpl-surface: oklch(0.99 0.008 40);
+  --tpl-fg: oklch(0.34 0.05 20);
+  --tpl-muted: oklch(0.55 0.04 25);
+  --tpl-accent: oklch(0.68 0.1 30);
+  --tpl-accent-soft: oklch(0.93 0.035 30);
+}
+.tpl-emerald {
+  --tpl-bg: oklch(0.24 0.07 165);
+  --tpl-surface: oklch(0.29 0.06 165);
+  --tpl-fg: oklch(0.96 0.015 100);
+  --tpl-muted: oklch(0.82 0.03 130);
+  --tpl-accent: oklch(0.84 0.12 90);
+  --tpl-accent-soft: oklch(0.35 0.07 165);
+}
+
+@keyframes inv-float-y {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.5; }
+  50% { transform: translateY(-14px) rotate(8deg); opacity: 0.9; }
+}
+@keyframes inv-bob-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(5px); }
+}
+@keyframes inv-enter-fade {
+  from { opacity: 0; transform: scale(1.03); }
+  to { opacity: 1; transform: scale(1); }
+}
+@keyframes inv-shimmer-x {
+  from { background-position: -180% 0; }
+  to { background-position: 280% 0; }
+}
+
+@utility inv-reveal {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 800ms cubic-bezier(0.22, 1, 0.36, 1), transform 800ms cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+@utility inv-reveal-in {
+  opacity: 1;
+  transform: translateY(0);
+}
+@utility inv-float {
+  animation: inv-float-y 8s ease-in-out infinite;
+}
+@utility inv-bob {
+  animation: inv-bob-y 2.4s ease-in-out infinite;
+}
+@utility inv-enter {
+  animation: inv-enter-fade 900ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@utility inv-gold-text {
+  background-image: linear-gradient(100deg, oklch(0.72 0.1 80), oklch(0.93 0.11 95), oklch(0.72 0.1 80));
+  background-size: 220% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: inv-shimmer-x 6s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .inv-reveal { opacity: 1; transform: none; transition: none; }
+  .inv-float, .inv-bob, .inv-enter, .inv-gold-text { animation: none; }
+}
