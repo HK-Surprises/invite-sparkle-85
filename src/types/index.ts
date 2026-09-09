@@ -31,7 +31,18 @@ export interface InvitationData {
   city?: string;
   hostNote?: string;
   message?: string;
+  /** Google Maps link for the venue. */
+  venueMapUrl?: string;
+  /** One event per line: "Name | Date | Time | Venue". */
+  events?: string;
+  /** Short couple / celebration story. */
+  story?: string;
+  /** Image links, one per line. */
+  galleryUrls?: string;
+  /** Closing blessing line. */
+  blessing?: string;
   [key: string]: string | undefined;
+
 }
 
 export interface TemplateRenderProps {
