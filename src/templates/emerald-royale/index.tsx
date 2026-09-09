@@ -21,10 +21,10 @@ export function EmeraldRoyale({ data, guestName, peopleCount }: TemplateRenderPr
   const couple = [data.groomName, data.brideName].filter(Boolean);
 
   return (
-    <div className="tpl-emerald min-h-full w-full bg-tpl-bg font-sans text-tpl-fg">
+    <div className="tpl-emerald flex min-h-full w-full flex-1 flex-col bg-tpl-bg font-sans text-tpl-fg">
       <CoverGate
         cover={(opening, open) => (
-          <div className="relative flex h-full min-h-full items-center justify-center overflow-hidden bg-tpl-bg px-6">
+          <div className="relative flex min-h-full flex-1 items-center justify-center overflow-hidden bg-tpl-bg px-6">
             <Floaters items={["✦", "◈", "✧", "❖", "✦", "◈", "✧"]} className="text-tpl-accent/45" />
             {/* Curtains parting */}
             {["left", "right"].map((side) => (

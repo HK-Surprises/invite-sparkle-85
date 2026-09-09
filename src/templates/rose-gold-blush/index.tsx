@@ -21,10 +21,10 @@ export function RoseGoldBlush({ data, guestName, peopleCount }: TemplateRenderPr
   const couple = [data.groomName, data.brideName].filter(Boolean);
 
   return (
-    <div className="tpl-rosegold min-h-full w-full bg-tpl-bg font-sans text-tpl-fg">
+    <div className="tpl-rosegold flex min-h-full w-full flex-1 flex-col bg-tpl-bg font-sans text-tpl-fg">
       <CoverGate
         cover={(opening, open) => (
-          <div className="relative flex h-full min-h-full items-center justify-center overflow-hidden px-6"
+          <div className="relative flex min-h-full flex-1 items-center justify-center overflow-hidden px-6"
             style={{
               backgroundImage:
                 "radial-gradient(70% 50% at 50% 0%, oklch(0.94 0.05 25) 0%, transparent 65%), radial-gradient(60% 45% at 20% 100%, oklch(0.95 0.035 60) 0%, transparent 60%)",

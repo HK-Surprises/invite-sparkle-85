@@ -72,9 +72,13 @@ export function CoverGate({
   }, [opening]);
 
   if (!opened) {
-    return <div className="relative h-full min-h-full w-full overflow-hidden">{cover(opening, () => setOpening(true))}</div>;
+    return (
+      <div className="relative flex min-h-full w-full flex-1 flex-col overflow-hidden">
+        {cover(opening, () => setOpening(true))}
+      </div>
+    );
   }
-  return <div className="inv-enter w-full">{children}</div>;
+  return <div className="inv-enter w-full flex-1">{children}</div>;
 }
 
 export interface EventItem {
