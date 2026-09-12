@@ -17,3 +17,8 @@
 - [x] Metadata-driven template registry (add folder + one entry)
 - [x] Older basic designs deactivated; existing invitations migrated
 - [x] Customer gallery with live preview
+
+## Customer category browsing (Sep 2026)
+- [x] Replace flat customer template gallery with database-driven category cards
+- [x] Add category-specific template galleries with preview and selection
+- [x] Verify desktop/mobile flow and existing invitation creation

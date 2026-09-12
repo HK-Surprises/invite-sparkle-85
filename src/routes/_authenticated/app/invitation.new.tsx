@@ -16,13 +16,16 @@ import { myCustomerQuery, myTemplatesQuery } from "@/lib/queries";
 import type { InvitationData, TemplateField } from "@/types";
 
 export const Route = createFileRoute("/_authenticated/app/invitation/new")({
-  validateSearch: (s: Record<string, unknown>) => ({ template: typeof s["template"] === "string" ? (s["template"] as string) : undefined }),
+  validateSearch: (s: Record<string, unknown>) => ({
+    template: typeof s["template"] === "string" ? (s["template"] as string) : undefined,
+    category: typeof s["category"] === "string" ? (s["category"] as string) : undefined,
+  }),
   head: () => ({ meta: [{ title: "Invitation details — InviteHub" }, { name: "description", content: "Enter the details for your invitation." }, { property: "og:title", content: "Invitation details — InviteHub" }, { property: "og:description", content: "Enter the details for your invitation." }] }),
   component: NewInvitationPage,
 });
 
 function NewInvitationPage() {
-  const { template: templateId } = Route.useSearch();
+  const { template: templateId, category: categorySlug } = Route.useSearch();
   const navigate = useNavigate();
   const qc = useQueryClient();
   const templates = useQuery(myTemplatesQuery);
@@ -83,9 +86,15 @@ function NewInvitationPage() {
         description={`Using ${template.name}. These details appear on every guest's personalized invitation.`}
         actions={
           <Button asChild variant="ghost">
-            <Link to="/app/templates">
-              <ArrowLeft /> Change template
-            </Link>
+            {categorySlug ? (
+              <Link to="/app/templates/$categorySlug" params={{ categorySlug }}>
+                <ArrowLeft /> Change template
+              </Link>
+            ) : (
+              <Link to="/app/templates">
+                <ArrowLeft /> Change template
+              </Link>
+            )}
           </Button>
         }
       />

@@ -49,6 +49,19 @@ export const myTemplatesQuery = queryOptions({
     ) as (Template & { categories: { name: string; slug: string } | null })[],
 });
 
+export const customerCategoriesQuery = queryOptions({
+  queryKey: ["me", "template-categories"],
+  queryFn: async () =>
+    unwrap(
+      await supabase
+        .from("categories")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order")
+        .order("name"),
+    ) as Category[],
+});
+
 export const myInvitationsQuery = queryOptions({
   queryKey: ["me", "invitations"],
   queryFn: async () =>
