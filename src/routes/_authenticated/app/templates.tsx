@@ -1,90 +1,53 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { Eye, LayoutTemplate } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { LayoutTemplate } from "lucide-react";
 import { PageHeader } from "@/components/shared/PageHeader";
-import { TemplateCard } from "@/components/shared/TemplateCard";
-import { InvitationPreview } from "@/components/shared/InvitationPreview";
+import { CategoryCard } from "@/components/shared/CategoryCard";
 import { EmptyState } from "@/components/shared/EmptyState";
 import { CardGridSkeleton } from "@/components/shared/LoadingState";
-import { myTemplatesQuery } from "@/lib/queries";
-import { getTemplateEntry, sampleDataFor } from "@/templates/registry";
+import { customerCategoriesQuery, myTemplatesQuery } from "@/lib/queries";
 
 export const Route = createFileRoute("/_authenticated/app/templates")({
-  head: () => ({ meta: [{ title: "Templates — InviteHub" }, { name: "description", content: "Choose a premium interactive invitation design assigned to your account." }, { property: "og:title", content: "Templates — InviteHub" }, { property: "og:description", content: "Choose a premium interactive invitation design assigned to your account." }] }),
+  head: () => ({ meta: [{ title: "Invitation Categories — InviteHub" }, { name: "description", content: "Choose what you are celebrating, then explore premium interactive invitation designs." }, { property: "og:title", content: "Invitation Categories — InviteHub" }, { property: "og:description", content: "Choose what you are celebrating, then explore premium interactive invitation designs." }, { property: "og:type", content: "website" }, { name: "twitter:card", content: "summary" }] }),
   component: TemplatesPage,
 });
 
 function TemplatesPage() {
   const templates = useQuery(myTemplatesQuery);
-  const [preview, setPreview] = useState<{ name: string; componentKey: string } | null>(null);
-  const sample = preview ? sampleDataFor(preview.componentKey) : null;
+  const categories = useQuery(customerCategoriesQuery);
+  const countByCategory = new Map<string, number>();
+  for (const template of templates.data ?? []) {
+    countByCategory.set(template.category_id, (countByCategory.get(template.category_id) ?? 0) + 1);
+  }
+  const isLoading = templates.isLoading || categories.isLoading;
+  const isError = templates.isError || categories.isError;
 
   return (
     <div>
       <PageHeader
         eyebrow="Step 1"
-        title="Choose a design"
-        description="Premium interactive invitations, made for the phone. Open a live preview to feel how your guests will experience it."
+        title="What are you celebrating?"
+        description="Choose a category to explore a curated collection of premium invitations made for the moment."
       />
-      {templates.isLoading ? (
+      {isLoading ? (
         <CardGridSkeleton />
-      ) : templates.isError ? (
-        <EmptyState title="We couldn't load your designs" description="Please refresh the page to try again." />
-      ) : templates.data?.length ? (
-        <div className="grid gap-6 lg:grid-cols-2 2xl:grid-cols-3">
-          {templates.data.map((t) => {
-            const entry = getTemplateEntry(t.component_key);
-            return (
-              <TemplateCard
-                key={t.id}
-                name={t.name}
-                categoryName={t.categories?.name ?? entry?.category}
-                componentKey={t.component_key}
-                description={entry?.description ?? t.description}
-                className="h-full"
-                footer={
-                  <>
-                    <Button asChild className="flex-1">
-                      <Link to="/app/invitation/new" search={{ template: t.id }}>
-                        Select design
-                      </Link>
-                    </Button>
-                    <Button
-                      variant="outline"
-                      className="flex-1"
-                      onClick={() => setPreview({ name: t.name, componentKey: t.component_key })}
-                    >
-                      <Eye className="mr-2 h-4 w-4" /> Live preview
-                    </Button>
-                  </>
-                }
-              />
-            );
-          })}
+      ) : isError ? (
+        <EmptyState title="We couldn't load your categories" description="Please refresh the page to try again." />
+      ) : categories.data?.length ? (
+        <div className="grid grid-cols-1 gap-5 min-[520px]:grid-cols-2 xl:grid-cols-3">
+          {categories.data.map((category) => (
+            <CategoryCard
+              key={category.id}
+              name={category.name}
+              slug={category.slug}
+              description={category.description}
+              templateCount={countByCategory.get(category.id) ?? 0}
+            />
+          ))}
         </div>
       ) : (
-        <EmptyState icon={LayoutTemplate} title="No designs assigned" description="No designs are currently assigned to your account. Please contact support to get access." />
+        <EmptyState icon={LayoutTemplate} title="No categories available" description="New celebration categories will appear here when they are available." />
       )}
-
-      <Dialog open={!!preview} onOpenChange={(o) => !o && setPreview(null)}>
-        <DialogContent className="max-w-md">
-          <DialogTitle className="font-display text-2xl">{preview?.name}</DialogTitle>
-          <p className="-mt-2 text-xs text-muted-foreground">
-            A sample invitation. Your details and each guest's name appear automatically.
-          </p>
-          {preview && sample && (
-            <InvitationPreview
-              componentKey={preview.componentKey}
-              title={sample.title}
-              data={sample.data}
-              guestName="Amit Shah"
-            />
-          )}
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }
