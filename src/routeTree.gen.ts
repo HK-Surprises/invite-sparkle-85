@@ -32,6 +32,7 @@ import { Route as AuthenticatedAdminCustomersIdRouteImport } from './routes/_aut
 import { Route as AuthenticatedAdminCustomersNewRouteImport } from './routes/_authenticated/admin/customers.new'
 import { Route as AuthenticatedAppInvitationIndexRouteImport } from './routes/_authenticated/app/invitation.index'
 import { Route as AuthenticatedAppInvitationNewRouteImport } from './routes/_authenticated/app/invitation.new'
+import { Route as AuthenticatedAppTemplatesCategorySlugRouteImport } from './routes/_authenticated/app/templates.$categorySlug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -162,6 +163,12 @@ const AuthenticatedAppInvitationNewRoute =
     path: '/invitation/new',
     getParentRoute: () => AuthenticatedAppRouteRoute,
   } as any)
+const AuthenticatedAppTemplatesCategorySlugRoute =
+  AuthenticatedAppTemplatesCategorySlugRouteImport.update({
+    id: '/$categorySlug',
+    path: '/$categorySlug',
+    getParentRoute: () => AuthenticatedAppTemplatesRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -180,10 +187,11 @@ export interface FileRoutesByFullPath {
   '/app/guests': typeof AuthenticatedAppGuestsRoute
   '/app/links': typeof AuthenticatedAppLinksRoute
   '/app/settings': typeof AuthenticatedAppSettingsRoute
-  '/app/templates': typeof AuthenticatedAppTemplatesRoute
+  '/app/templates': typeof AuthenticatedAppTemplatesRouteWithChildren
   '/admin/customers/$id': typeof AuthenticatedAdminCustomersIdRoute
   '/admin/customers/new': typeof AuthenticatedAdminCustomersNewRoute
   '/app/invitation/new': typeof AuthenticatedAppInvitationNewRoute
+  '/app/templates/$categorySlug': typeof AuthenticatedAppTemplatesCategorySlugRoute
   '/admin/customers/': typeof AuthenticatedAdminCustomersIndexRoute
   '/app/invitation/': typeof AuthenticatedAppInvitationIndexRoute
 }
@@ -204,10 +212,11 @@ export interface FileRoutesByTo {
   '/app/guests': typeof AuthenticatedAppGuestsRoute
   '/app/links': typeof AuthenticatedAppLinksRoute
   '/app/settings': typeof AuthenticatedAppSettingsRoute
-  '/app/templates': typeof AuthenticatedAppTemplatesRoute
+  '/app/templates': typeof AuthenticatedAppTemplatesRouteWithChildren
   '/admin/customers/$id': typeof AuthenticatedAdminCustomersIdRoute
   '/admin/customers/new': typeof AuthenticatedAdminCustomersNewRoute
   '/app/invitation/new': typeof AuthenticatedAppInvitationNewRoute
+  '/app/templates/$categorySlug': typeof AuthenticatedAppTemplatesCategorySlugRoute
   '/admin/customers': typeof AuthenticatedAdminCustomersIndexRoute
   '/app/invitation': typeof AuthenticatedAppInvitationIndexRoute
 }
@@ -230,10 +239,11 @@ export interface FileRoutesById {
   '/_authenticated/app/guests': typeof AuthenticatedAppGuestsRoute
   '/_authenticated/app/links': typeof AuthenticatedAppLinksRoute
   '/_authenticated/app/settings': typeof AuthenticatedAppSettingsRoute
-  '/_authenticated/app/templates': typeof AuthenticatedAppTemplatesRoute
+  '/_authenticated/app/templates': typeof AuthenticatedAppTemplatesRouteWithChildren
   '/_authenticated/admin/customers/$id': typeof AuthenticatedAdminCustomersIdRoute
   '/_authenticated/admin/customers/new': typeof AuthenticatedAdminCustomersNewRoute
   '/_authenticated/app/invitation/new': typeof AuthenticatedAppInvitationNewRoute
+  '/_authenticated/app/templates/$categorySlug': typeof AuthenticatedAppTemplatesCategorySlugRoute
   '/_authenticated/admin/customers/': typeof AuthenticatedAdminCustomersIndexRoute
   '/_authenticated/app/invitation/': typeof AuthenticatedAppInvitationIndexRoute
 }
@@ -260,6 +270,7 @@ export interface FileRouteTypes {
     | '/admin/customers/$id'
     | '/admin/customers/new'
     | '/app/invitation/new'
+    | '/app/templates/$categorySlug'
     | '/admin/customers/'
     | '/app/invitation/'
   fileRoutesByTo: FileRoutesByTo
@@ -284,6 +295,7 @@ export interface FileRouteTypes {
     | '/admin/customers/$id'
     | '/admin/customers/new'
     | '/app/invitation/new'
+    | '/app/templates/$categorySlug'
     | '/admin/customers'
     | '/app/invitation'
   id:
@@ -309,6 +321,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/customers/$id'
     | '/_authenticated/admin/customers/new'
     | '/_authenticated/app/invitation/new'
+    | '/_authenticated/app/templates/$categorySlug'
     | '/_authenticated/admin/customers/'
     | '/_authenticated/app/invitation/'
   fileRoutesById: FileRoutesById
@@ -483,6 +496,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAppInvitationNewRouteImport
       parentRoute: typeof AuthenticatedAppRouteRoute
     }
+    '/_authenticated/app/templates/$categorySlug': {
+      id: '/_authenticated/app/templates/$categorySlug'
+      path: '/$categorySlug'
+      fullPath: '/app/templates/$categorySlug'
+      preLoaderRoute: typeof AuthenticatedAppTemplatesCategorySlugRouteImport
+      parentRoute: typeof AuthenticatedAppTemplatesRoute
+    }
   }
 }
 
@@ -517,13 +537,28 @@ const AuthenticatedAdminRouteRouteWithChildren =
     AuthenticatedAdminRouteRouteChildren,
   )
 
+interface AuthenticatedAppTemplatesRouteChildren {
+  AuthenticatedAppTemplatesCategorySlugRoute: typeof AuthenticatedAppTemplatesCategorySlugRoute
+}
+
+const AuthenticatedAppTemplatesRouteChildren: AuthenticatedAppTemplatesRouteChildren =
+  {
+    AuthenticatedAppTemplatesCategorySlugRoute:
+      AuthenticatedAppTemplatesCategorySlugRoute,
+  }
+
+const AuthenticatedAppTemplatesRouteWithChildren =
+  AuthenticatedAppTemplatesRoute._addFileChildren(
+    AuthenticatedAppTemplatesRouteChildren,
+  )
+
 interface AuthenticatedAppRouteRouteChildren {
   AuthenticatedAppAnalyticsRoute: typeof AuthenticatedAppAnalyticsRoute
   AuthenticatedAppDashboardRoute: typeof AuthenticatedAppDashboardRoute
   AuthenticatedAppGuestsRoute: typeof AuthenticatedAppGuestsRoute
   AuthenticatedAppLinksRoute: typeof AuthenticatedAppLinksRoute
   AuthenticatedAppSettingsRoute: typeof AuthenticatedAppSettingsRoute
-  AuthenticatedAppTemplatesRoute: typeof AuthenticatedAppTemplatesRoute
+  AuthenticatedAppTemplatesRoute: typeof AuthenticatedAppTemplatesRouteWithChildren
   AuthenticatedAppInvitationNewRoute: typeof AuthenticatedAppInvitationNewRoute
   AuthenticatedAppInvitationIndexRoute: typeof AuthenticatedAppInvitationIndexRoute
 }
@@ -534,7 +569,7 @@ const AuthenticatedAppRouteRouteChildren: AuthenticatedAppRouteRouteChildren = {
   AuthenticatedAppGuestsRoute: AuthenticatedAppGuestsRoute,
   AuthenticatedAppLinksRoute: AuthenticatedAppLinksRoute,
   AuthenticatedAppSettingsRoute: AuthenticatedAppSettingsRoute,
-  AuthenticatedAppTemplatesRoute: AuthenticatedAppTemplatesRoute,
+  AuthenticatedAppTemplatesRoute: AuthenticatedAppTemplatesRouteWithChildren,
   AuthenticatedAppInvitationNewRoute: AuthenticatedAppInvitationNewRoute,
   AuthenticatedAppInvitationIndexRoute: AuthenticatedAppInvitationIndexRoute,
 }
