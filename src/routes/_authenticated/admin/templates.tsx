@@ -4,6 +4,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageHeader } from "@/components/shared/PageHeader";
 import { TemplateCard } from "@/components/shared/TemplateCard";
 import { CardGridSkeleton } from "@/components/shared/LoadingState";
@@ -23,6 +24,7 @@ function AdminTemplatesPage() {
   const qc = useQueryClient();
   const templates = useQuery(adminTemplatesQuery);
   const [preview, setPreview] = useState<Template | null>(null);
+  const [tab, setTab] = useState<"active" | "inactive" | "all">("active");
   const toggle = useMutation({
     mutationFn: async (t: Template) => {
       const { error } = await supabase.from("templates").update({ is_active: !t.is_active }).eq("id", t.id);
