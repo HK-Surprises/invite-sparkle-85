@@ -40,6 +40,8 @@ function CustomerDetailPage() {
   const customer = useQuery(adminCustomerQuery(id));
   const resetPw = useServerFn(resetCustomerPassword);
   const [pw, setPw] = useState("");
+  const navigate = useNavigate();
+  const [confirmArchive, setConfirmArchive] = useState(false);
 
   const save = useMutation({
     mutationFn: async (v: CustomerFormValues) => {
@@ -111,16 +113,52 @@ function CustomerDetailPage() {
         eyebrow="Customer"
         title={
           <span className="flex items-center gap-3">
-            {c.name} <StatusBadge status={c.status} />
+            {c.name}{" "}
+            {c.archived_at ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-rose px-2.5 py-0.5 text-xs font-medium text-rose-foreground">
+                <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
+                Archived / No access
+              </span>
+            ) : (
+              <StatusBadge status={c.status} />
+            )}
           </span>
         }
         description={`${c.email} · joined ${formatDate(c.created_at)}`}
         actions={
-          <Button asChild variant="ghost">
-            <Link to="/admin/customers"><ArrowLeft /> All customers</Link>
-          </Button>
+          <>
+            <Button asChild variant="ghost">
+              <Link to={c.archived_at ? "/admin/customers/past" : "/admin/customers"}><ArrowLeft /> All customers</Link>
+            </Button>
+            {c.archived_at ? (
+              <Button variant="outline" disabled={archive.isPending} onClick={() => archive.mutate(false)}>
+                <RotateCcw /> Restore customer
+              </Button>
+            ) : (
+              <Button variant="outline" disabled={archive.isPending} onClick={() => setConfirmArchive(true)}>
+                <Archive /> Delete customer
+              </Button>
+            )}
+          </>
         }
       />
+      <AlertDialog open={confirmArchive} onOpenChange={setConfirmArchive}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Move this customer to Past Customers?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {c.name} will keep all invitations and guest history, but will no longer be able to add guests or create
+              invitations. You can restore them at any time.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => { setConfirmArchive(false); archive.mutate(true); }}>
+              Move to Past Customers
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatsCard label="Limit" value={c.invitation_limit} tone="lavender" />
         <StatsCard label="Used" value={used} tone="peach" hint={`${Math.max(c.invitation_limit - used, 0)} remaining`} />
