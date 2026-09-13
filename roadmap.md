@@ -22,3 +22,9 @@
 - [x] Replace flat customer template gallery with database-driven category cards
 - [x] Add category-specific template galleries with preview and selection
 - [x] Verify desktop/mobile flow and existing invitation creation
+
+## Past customers & dashboard totals (Sep 2026)
+- [x] Archive customers into a Past Customers view (history kept, restore supported)
+- [x] Archived customers become read-only (no new guests/invitations)
+- [x] Admin templates split into Active / Inactive tabs
+- [x] Customer dashboard totals across all invitations with per-invitation breakdown
