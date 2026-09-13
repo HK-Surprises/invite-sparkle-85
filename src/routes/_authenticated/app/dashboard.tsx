@@ -58,7 +58,7 @@ function BreakdownCard({
 }
 
 function CustomerDashboard() {
-  const { customer, invitation, isLoading, used, limit, remaining, totalGuests, totalOpened, breakdown, invitations } = useMyInvitation();
+  const { customer, invitation, guests, isLoading, used, limit, remaining, totalGuests, totalOpened, breakdown, invitations } = useMyInvitation();
   const templates = useQuery(myTemplatesQuery);
   const settings = useQuery(platformSettingsQuery);
   const firstName = customer?.name.split(" ")[0] ?? "there";
@@ -104,7 +104,7 @@ function CustomerDashboard() {
                 <LayoutTemplate /> <span>Choose Template</span> <ArrowRight className="ml-auto" />
               </Link>
             </Button>
-            {invitation ? (
+            {invitation && !isArchived ? (
               <AddGuestDialog
                 invitationId={invitation.id}
                 invitationTitle={invitation.title}
