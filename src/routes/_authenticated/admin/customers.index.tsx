@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Plus, Search, Users } from "lucide-react";
+import { Archive, Plus, Search, Users } from "lucide-react";
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,11 +40,18 @@ function CustomersPage() {
         title="Customers"
         description="Every customer gets a login, an invitation limit, allowed templates and an access window."
         actions={
-          <Button asChild>
-            <Link to="/admin/customers/new">
-              <Plus /> Add Customer
-            </Link>
-          </Button>
+          <>
+            <Button asChild variant="outline">
+              <Link to="/admin/customers/past">
+                <Archive /> Past Customers
+              </Link>
+            </Button>
+            <Button asChild>
+              <Link to="/admin/customers/new">
+                <Plus /> Add Customer
+              </Link>
+            </Button>
+          </>
         }
       />
       <section className="card-elevated overflow-hidden">
