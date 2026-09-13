@@ -1,7 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, KeyRound } from "lucide-react";
+import { Archive, ArrowLeft, KeyRound, RotateCcw } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -55,6 +66,27 @@ function CustomerDetailPage() {
       qc.invalidateQueries({ queryKey: ["admin"] });
     },
     onError: () => toast.error("Couldn't save changes. Please try again."),
+  });
+
+  const archive = useMutation({
+    mutationFn: async (archived: boolean) => {
+      const { error } = await supabase
+        .from("customers")
+        .update(archived ? { archived_at: new Date().toISOString(), status: "inactive" } : { archived_at: null, status: "active" })
+        .eq("id", id);
+      if (error) throw new Error(error.message);
+      return archived;
+    },
+    onSuccess: (archived) => {
+      qc.invalidateQueries({ queryKey: ["admin"] });
+      if (archived) {
+        toast.success("Customer moved to Past Customers.");
+        navigate({ to: "/admin/customers/past" });
+      } else {
+        toast.success("Customer restored to Active Customers.");
+      }
+    },
+    onError: () => toast.error("Couldn't update this customer."),
   });
 
   const reset = useMutation({
