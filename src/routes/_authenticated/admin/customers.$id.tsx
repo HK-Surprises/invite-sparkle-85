@@ -1,7 +1,18 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
-import { ArrowLeft, KeyRound } from "lucide-react";
+import { Archive, ArrowLeft, KeyRound, RotateCcw } from "lucide-react";
+import { useNavigate } from "@tanstack/react-router";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -29,6 +40,8 @@ function CustomerDetailPage() {
   const customer = useQuery(adminCustomerQuery(id));
   const resetPw = useServerFn(resetCustomerPassword);
   const [pw, setPw] = useState("");
+  const navigate = useNavigate();
+  const [confirmArchive, setConfirmArchive] = useState(false);
 
   const save = useMutation({
     mutationFn: async (v: CustomerFormValues) => {
@@ -57,6 +70,27 @@ function CustomerDetailPage() {
     onError: () => toast.error("Couldn't save changes. Please try again."),
   });
 
+  const archive = useMutation({
+    mutationFn: async (archived: boolean) => {
+      const { error } = await supabase
+        .from("customers")
+        .update(archived ? { archived_at: new Date().toISOString(), status: "inactive" } : { archived_at: null, status: "active" })
+        .eq("id", id);
+      if (error) throw new Error(error.message);
+      return archived;
+    },
+    onSuccess: (archived) => {
+      qc.invalidateQueries({ queryKey: ["admin"] });
+      if (archived) {
+        toast.success("Customer moved to Past Customers.");
+        navigate({ to: "/admin/customers/past" });
+      } else {
+        toast.success("Customer restored to Active Customers.");
+      }
+    },
+    onError: () => toast.error("Couldn't update this customer."),
+  });
+
   const reset = useMutation({
     mutationFn: () => resetPw({ data: { customer_id: id, password: pw } }),
     onSuccess: () => {
@@ -79,16 +113,52 @@ function CustomerDetailPage() {
         eyebrow="Customer"
         title={
           <span className="flex items-center gap-3">
-            {c.name} <StatusBadge status={c.status} />
+            {c.name}{" "}
+            {c.archived_at ? (
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-rose px-2.5 py-0.5 text-xs font-medium text-rose-foreground">
+                <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
+                Archived / No access
+              </span>
+            ) : (
+              <StatusBadge status={c.status} />
+            )}
           </span>
         }
         description={`${c.email} · joined ${formatDate(c.created_at)}`}
         actions={
-          <Button asChild variant="ghost">
-            <Link to="/admin/customers"><ArrowLeft /> All customers</Link>
-          </Button>
+          <>
+            <Button asChild variant="ghost">
+              <Link to={c.archived_at ? "/admin/customers/past" : "/admin/customers"}><ArrowLeft /> All customers</Link>
+            </Button>
+            {c.archived_at ? (
+              <Button variant="outline" disabled={archive.isPending} onClick={() => archive.mutate(false)}>
+                <RotateCcw /> Restore customer
+              </Button>
+            ) : (
+              <Button variant="outline" disabled={archive.isPending} onClick={() => setConfirmArchive(true)}>
+                <Archive /> Delete customer
+              </Button>
+            )}
+          </>
         }
       />
+      <AlertDialog open={confirmArchive} onOpenChange={setConfirmArchive}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Move this customer to Past Customers?</AlertDialogTitle>
+            <AlertDialogDescription>
+              {c.name} will keep all invitations and guest history, but will no longer be able to add guests or create
+              invitations. You can restore them at any time.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={() => { setConfirmArchive(false); archive.mutate(true); }}>
+              Move to Past Customers
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
       <div className="mb-6 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatsCard label="Limit" value={c.invitation_limit} tone="lavender" />
         <StatsCard label="Used" value={used} tone="peach" hint={`${Math.max(c.invitation_limit - used, 0)} remaining`} />

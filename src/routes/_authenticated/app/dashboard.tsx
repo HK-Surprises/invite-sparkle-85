@@ -1,7 +1,9 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, Eye, HelpCircle, LayoutTemplate, Link2, Mail, Plus, Share2, Users } from "lucide-react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Progress } from "@/components/ui/progress";
 import { StatsCard } from "@/components/shared/StatsCard";
 import { StatusBadge } from "@/components/shared/StatusBadge";
@@ -17,11 +19,51 @@ export const Route = createFileRoute("/_authenticated/app/dashboard")({
   component: CustomerDashboard,
 });
 
+function BreakdownCard({
+  children,
+  rows,
+  valueKey,
+}: {
+  children: React.ReactNode;
+  rows: { id: string; title: string; guests: number; opened: number }[];
+  valueKey: "guests" | "opened";
+}) {
+  const [open, setOpen] = useState(false);
+  if (rows.length < 2) return <>{children}</>;
+  return (
+    <Popover open={open} onOpenChange={setOpen}>
+      <PopoverTrigger asChild>
+        <button
+          type="button"
+          className="text-left"
+          onMouseEnter={() => setOpen(true)}
+          onMouseLeave={() => setOpen(false)}
+        >
+          {children}
+        </button>
+      </PopoverTrigger>
+      <PopoverContent align="start" className="w-64" onOpenAutoFocus={(e) => e.preventDefault()}>
+        <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">By invitation</p>
+        <ul className="space-y-1.5">
+          {rows.map((r) => (
+            <li key={r.id} className="flex items-center justify-between gap-3 text-sm">
+              <span className="truncate">{r.title}</span>
+              <span className="font-semibold">{r[valueKey]}</span>
+            </li>
+          ))}
+        </ul>
+      </PopoverContent>
+    </Popover>
+  );
+}
+
 function CustomerDashboard() {
-  const { customer, invitation, guests, isLoading, used, limit, remaining, opened, invitations } = useMyInvitation();
+  const { customer, invitation, allGuests, isLoading, used, limit, remaining, totalGuests, totalOpened, breakdown, invitations } = useMyInvitation();
   const templates = useQuery(myTemplatesQuery);
   const settings = useQuery(platformSettingsQuery);
   const firstName = customer?.name.split(" ")[0] ?? "there";
+  const isArchived = Boolean(customer?.archived_at);
+  const across = invitations.length > 1 ? `Across ${invitations.length} invitations` : undefined;
 
   return (
     <div className="space-y-8">
@@ -30,11 +72,25 @@ function CustomerDashboard() {
         <p className="mt-1 text-muted-foreground">Let's create something special for your guests.</p>
       </div>
 
+      {isArchived && (
+        <div className="rounded-2xl bg-rose/60 p-5 text-sm">
+          <p className="font-semibold text-rose-foreground">Your account is archived</p>
+          <p className="mt-1 text-muted-foreground">
+            You can still view your invitations and guests, but adding new guests or invitations is turned off. Please contact
+            support to reactivate your account.
+          </p>
+        </div>
+      )}
+
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <StatsCard label="Active invitation" value={invitations.filter((i) => i.status === "active").length} icon={Mail} tone="lavender" loading={isLoading} />
-        <StatsCard label="Guests" value={used} icon={Users} tone="peach" loading={isLoading} />
-        <StatsCard label="Opened" value={opened} icon={Eye} tone="sage" loading={isLoading} hint={invitation ? `of ${guests.length} in ${invitation.title}` : undefined} />
-        <StatsCard label="Remaining" value={remaining} icon={Link2} tone="sky" loading={isLoading} hint={`of ${limit} invitations`} />
+        <BreakdownCard rows={breakdown} valueKey="guests">
+          <StatsCard label="Guests" value={totalGuests} icon={Users} tone="peach" loading={isLoading} hint={across} className="w-full" />
+        </BreakdownCard>
+        <BreakdownCard rows={breakdown} valueKey="opened">
+          <StatsCard label="Opened" value={totalOpened} icon={Eye} tone="sage" loading={isLoading} hint={across ?? (invitation ? `of ${totalGuests} guests` : undefined)} className="w-full" />
+        </BreakdownCard>
+        <StatsCard label="Remaining" value={remaining} icon={Link2} tone="sky" loading={isLoading} hint={`of ${limit} invitations · ${used} used`} />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-3">
@@ -48,7 +104,7 @@ function CustomerDashboard() {
                 <LayoutTemplate /> <span>Choose Template</span> <ArrowRight className="ml-auto" />
               </Link>
             </Button>
-            {invitation ? (
+            {invitation && !isArchived ? (
               <AddGuestDialog
                 invitationId={invitation.id}
                 invitationTitle={invitation.title}
@@ -128,9 +184,9 @@ function CustomerDashboard() {
         <section className="space-y-6">
           <div className="card-elevated p-6">
             <h2 className="font-display text-2xl">Recent guests</h2>
-            {guests.length ? (
+            {allGuests.length ? (
               <ul className="mt-4 space-y-3">
-                {guests.slice(0, 5).map((g) => (
+                {allGuests.slice(0, 5).map((g) => (
                   <li key={g.id} className="flex items-center gap-3">
                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-peach text-xs font-semibold text-peach-foreground">{initials(g.name)}</span>
                     <div className="min-w-0 flex-1">

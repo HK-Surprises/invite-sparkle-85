@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { CheckCircle2, Loader2, Plus } from "lucide-react";
 import { useState, type ReactNode } from "react";
 import { toast } from "sonner";
@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { invitationUrl } from "@/lib/format";
+import { myCustomerQuery } from "@/lib/queries";
 import { CopyLinkButton, ShareButton } from "@/components/shared/ShareActions";
 import type { Guest } from "@/types";
 
@@ -29,6 +30,8 @@ export function AddGuestDialog({
   trigger?: ReactNode;
 }) {
   const qc = useQueryClient();
+  const { data: customer } = useQuery(myCustomerQuery);
+  const isArchived = Boolean(customer?.archived_at);
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({ name: "", mobile: "", group_name: "", people_count: "1" });
   const [created, setCreated] = useState<Guest | null>(null);
@@ -106,6 +109,14 @@ export function AddGuestDialog({
             <Button variant="ghost" size="sm" onClick={reset}>
               Add another guest
             </Button>
+          </div>
+        ) : isArchived ? (
+          <div className="space-y-3 py-2 text-center">
+            <DialogTitle className="font-display text-2xl">Your account is archived</DialogTitle>
+            <DialogDescription>
+              You can still view your invitations and guests, but new guests can't be added. Please contact support to
+              reactivate your account.
+            </DialogDescription>
           </div>
         ) : remaining <= 0 ? (
           <div className="space-y-3 py-2 text-center">

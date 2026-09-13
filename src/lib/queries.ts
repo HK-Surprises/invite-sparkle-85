@@ -91,7 +91,20 @@ export const adminCustomersQuery = queryOptions({
   queryKey: ["admin", "customers"],
   queryFn: async () => {
     const customers = unwrap(
-      await supabase.from("customers").select("*").order("created_at", { ascending: false }),
+      await supabase.from("customers").select("*").is("archived_at", null).order("created_at", { ascending: false }),
+    ) as Customer[];
+    const usage = unwrap(await supabase.from("customer_usage").select("*")) as CustomerUsage[];
+    const byId = new Map(usage.map((u) => [u.customer_id, u]));
+    return customers.map((c) => ({ ...c, usage: byId.get(c.id) ?? null }));
+  },
+});
+
+/** Archived ("past") customers — records are preserved, access is revoked. */
+export const adminPastCustomersQuery = queryOptions({
+  queryKey: ["admin", "customers", "past"],
+  queryFn: async () => {
+    const customers = unwrap(
+      await supabase.from("customers").select("*").not("archived_at", "is", null).order("archived_at", { ascending: false }),
     ) as Customer[];
     const usage = unwrap(await supabase.from("customer_usage").select("*")) as CustomerUsage[];
     const byId = new Map(usage.map((u) => [u.customer_id, u]));

@@ -30,6 +30,7 @@ import { Route as AuthenticatedAppTemplatesRouteImport } from './routes/_authent
 import { Route as AuthenticatedAdminCustomersIndexRouteImport } from './routes/_authenticated/admin/customers.index'
 import { Route as AuthenticatedAdminCustomersIdRouteImport } from './routes/_authenticated/admin/customers.$id'
 import { Route as AuthenticatedAdminCustomersNewRouteImport } from './routes/_authenticated/admin/customers.new'
+import { Route as AuthenticatedAdminCustomersPastRouteImport } from './routes/_authenticated/admin/customers.past'
 import { Route as AuthenticatedAppInvitationIndexRouteImport } from './routes/_authenticated/app/invitation.index'
 import { Route as AuthenticatedAppInvitationNewRouteImport } from './routes/_authenticated/app/invitation.new'
 import { Route as AuthenticatedAppTemplatesIndexRouteImport } from './routes/_authenticated/app/templates.index'
@@ -152,6 +153,12 @@ const AuthenticatedAdminCustomersNewRoute =
     path: '/customers/new',
     getParentRoute: () => AuthenticatedAdminRouteRoute,
   } as any)
+const AuthenticatedAdminCustomersPastRoute =
+  AuthenticatedAdminCustomersPastRouteImport.update({
+    id: '/customers/past',
+    path: '/customers/past',
+    getParentRoute: () => AuthenticatedAdminRouteRoute,
+  } as any)
 const AuthenticatedAppInvitationIndexRoute =
   AuthenticatedAppInvitationIndexRouteImport.update({
     id: '/invitation/',
@@ -197,6 +204,7 @@ export interface FileRoutesByFullPath {
   '/app/templates': typeof AuthenticatedAppTemplatesRouteWithChildren
   '/admin/customers/$id': typeof AuthenticatedAdminCustomersIdRoute
   '/admin/customers/new': typeof AuthenticatedAdminCustomersNewRoute
+  '/admin/customers/past': typeof AuthenticatedAdminCustomersPastRoute
   '/app/invitation/new': typeof AuthenticatedAppInvitationNewRoute
   '/app/templates/$categorySlug': typeof AuthenticatedAppTemplatesCategorySlugRoute
   '/admin/customers/': typeof AuthenticatedAdminCustomersIndexRoute
@@ -222,6 +230,7 @@ export interface FileRoutesByTo {
   '/app/settings': typeof AuthenticatedAppSettingsRoute
   '/admin/customers/$id': typeof AuthenticatedAdminCustomersIdRoute
   '/admin/customers/new': typeof AuthenticatedAdminCustomersNewRoute
+  '/admin/customers/past': typeof AuthenticatedAdminCustomersPastRoute
   '/app/invitation/new': typeof AuthenticatedAppInvitationNewRoute
   '/app/templates/$categorySlug': typeof AuthenticatedAppTemplatesCategorySlugRoute
   '/admin/customers': typeof AuthenticatedAdminCustomersIndexRoute
@@ -250,6 +259,7 @@ export interface FileRoutesById {
   '/_authenticated/app/templates': typeof AuthenticatedAppTemplatesRouteWithChildren
   '/_authenticated/admin/customers/$id': typeof AuthenticatedAdminCustomersIdRoute
   '/_authenticated/admin/customers/new': typeof AuthenticatedAdminCustomersNewRoute
+  '/_authenticated/admin/customers/past': typeof AuthenticatedAdminCustomersPastRoute
   '/_authenticated/app/invitation/new': typeof AuthenticatedAppInvitationNewRoute
   '/_authenticated/app/templates/$categorySlug': typeof AuthenticatedAppTemplatesCategorySlugRoute
   '/_authenticated/admin/customers/': typeof AuthenticatedAdminCustomersIndexRoute
@@ -278,6 +288,7 @@ export interface FileRouteTypes {
     | '/app/templates'
     | '/admin/customers/$id'
     | '/admin/customers/new'
+    | '/admin/customers/past'
     | '/app/invitation/new'
     | '/app/templates/$categorySlug'
     | '/admin/customers/'
@@ -303,6 +314,7 @@ export interface FileRouteTypes {
     | '/app/settings'
     | '/admin/customers/$id'
     | '/admin/customers/new'
+    | '/admin/customers/past'
     | '/app/invitation/new'
     | '/app/templates/$categorySlug'
     | '/admin/customers'
@@ -330,6 +342,7 @@ export interface FileRouteTypes {
     | '/_authenticated/app/templates'
     | '/_authenticated/admin/customers/$id'
     | '/_authenticated/admin/customers/new'
+    | '/_authenticated/admin/customers/past'
     | '/_authenticated/app/invitation/new'
     | '/_authenticated/app/templates/$categorySlug'
     | '/_authenticated/admin/customers/'
@@ -493,6 +506,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminCustomersNewRouteImport
       parentRoute: typeof AuthenticatedAdminRouteRoute
     }
+    '/_authenticated/admin/customers/past': {
+      id: '/_authenticated/admin/customers/past'
+      path: '/customers/past'
+      fullPath: '/admin/customers/past'
+      preLoaderRoute: typeof AuthenticatedAdminCustomersPastRouteImport
+      parentRoute: typeof AuthenticatedAdminRouteRoute
+    }
     '/_authenticated/app/invitation/': {
       id: '/_authenticated/app/invitation/'
       path: '/invitation'
@@ -533,6 +553,7 @@ interface AuthenticatedAdminRouteRouteChildren {
   AuthenticatedAdminTemplatesRoute: typeof AuthenticatedAdminTemplatesRoute
   AuthenticatedAdminCustomersIdRoute: typeof AuthenticatedAdminCustomersIdRoute
   AuthenticatedAdminCustomersNewRoute: typeof AuthenticatedAdminCustomersNewRoute
+  AuthenticatedAdminCustomersPastRoute: typeof AuthenticatedAdminCustomersPastRoute
   AuthenticatedAdminCustomersIndexRoute: typeof AuthenticatedAdminCustomersIndexRoute
 }
 
@@ -546,6 +567,7 @@ const AuthenticatedAdminRouteRouteChildren: AuthenticatedAdminRouteRouteChildren
     AuthenticatedAdminTemplatesRoute: AuthenticatedAdminTemplatesRoute,
     AuthenticatedAdminCustomersIdRoute: AuthenticatedAdminCustomersIdRoute,
     AuthenticatedAdminCustomersNewRoute: AuthenticatedAdminCustomersNewRoute,
+    AuthenticatedAdminCustomersPastRoute: AuthenticatedAdminCustomersPastRoute,
     AuthenticatedAdminCustomersIndexRoute:
       AuthenticatedAdminCustomersIndexRoute,
   }
