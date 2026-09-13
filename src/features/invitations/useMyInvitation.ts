@@ -37,6 +37,7 @@ export function useMyInvitation(selectedId?: string) {
     limit,
     remaining: Math.max(limit - totalGuests, 0),
     totalGuests,
+    allGuests: every,
     totalOpened,
     breakdown,
     opened: guests.data?.filter((g) => g.status === "opened").length ?? 0,

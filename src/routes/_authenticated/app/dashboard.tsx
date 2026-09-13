@@ -58,7 +58,7 @@ function BreakdownCard({
 }
 
 function CustomerDashboard() {
-  const { customer, invitation, guests, isLoading, used, limit, remaining, totalGuests, totalOpened, breakdown, invitations } = useMyInvitation();
+  const { customer, invitation, allGuests, isLoading, used, limit, remaining, totalGuests, totalOpened, breakdown, invitations } = useMyInvitation();
   const templates = useQuery(myTemplatesQuery);
   const settings = useQuery(platformSettingsQuery);
   const firstName = customer?.name.split(" ")[0] ?? "there";
@@ -184,9 +184,9 @@ function CustomerDashboard() {
         <section className="space-y-6">
           <div className="card-elevated p-6">
             <h2 className="font-display text-2xl">Recent guests</h2>
-            {guests.length ? (
+            {allGuests.length ? (
               <ul className="mt-4 space-y-3">
-                {guests.slice(0, 5).map((g) => (
+                {allGuests.slice(0, 5).map((g) => (
                   <li key={g.id} className="flex items-center gap-3">
                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-peach text-xs font-semibold text-peach-foreground">{initials(g.name)}</span>
                     <div className="min-w-0 flex-1">
