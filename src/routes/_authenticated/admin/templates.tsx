@@ -32,14 +32,28 @@ function AdminTemplatesPage() {
     onError: () => toast.error("Couldn't update template."),
   });
 
+  const all = templates.data ?? [];
+  const active = all.filter((t) => t.is_active);
+  const inactive = all.filter((t) => !t.is_active);
+  const visible = tab === "active" ? active : tab === "inactive" ? inactive : all;
+
   return (
     <div>
       <PageHeader title="Templates" description="Designs customers can be given access to. Assign them from a customer's page." />
+      <Tabs value={tab} onValueChange={(v) => setTab(v as typeof tab)} className="mb-5">
+        <TabsList>
+          <TabsTrigger value="active">Active ({active.length})</TabsTrigger>
+          <TabsTrigger value="inactive">Inactive ({inactive.length})</TabsTrigger>
+          <TabsTrigger value="all">All ({all.length})</TabsTrigger>
+        </TabsList>
+      </Tabs>
       {templates.isLoading ? (
         <CardGridSkeleton />
+      ) : visible.length === 0 ? (
+        <p className="text-sm text-muted-foreground">No {tab === "all" ? "" : tab} templates to show.</p>
       ) : (
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
-          {templates.data?.map((t) => (
+          {visible.map((t) => (
             <TemplateCard
               key={t.id}
               name={t.name}
