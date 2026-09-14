@@ -1,7 +1,7 @@
-import type { TemplateRenderProps } from "@/types";
-import { Details, Greeting, HostNote, Message, Names, TemplateFrame } from "./shared";
+import type { InvitationTemplateProps } from "../contract";
+import { Details, Greeting, HostNote, Message, Names, TemplateFrame } from "../kit";
 
-export function EngagementElegant01({ data, guestName }: TemplateRenderProps) {
+export function EngagementElegant01({ data, guestName }: InvitationTemplateProps) {
   return (
     <TemplateFrame theme="tpl-engagement" className="items-center justify-center p-5">
       <div className="w-full max-w-sm rounded-[2rem] bg-tpl-surface px-8 py-12 text-center shadow-float">
