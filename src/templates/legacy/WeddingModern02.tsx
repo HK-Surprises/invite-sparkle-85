@@ -1,7 +1,7 @@
-import type { TemplateRenderProps } from "@/types";
-import { Details, Greeting, HostNote, Message, Names, TemplateFrame } from "./shared";
+import type { InvitationTemplateProps } from "../contract";
+import { Details, Greeting, HostNote, Message, Names, TemplateFrame } from "../kit";
 
-export function WeddingModern02({ data, guestName }: TemplateRenderProps) {
+export function WeddingModern02({ data, guestName }: InvitationTemplateProps) {
   return (
     <TemplateFrame theme="tpl-modern">
       <div className="flex-1 px-8 pt-14 pb-8">

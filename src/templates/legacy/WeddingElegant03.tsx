@@ -1,7 +1,7 @@
-import type { TemplateRenderProps } from "@/types";
-import { Details, Greeting, HostNote, Message, Names, Ornament, TemplateFrame } from "./shared";
+import type { InvitationTemplateProps } from "../contract";
+import { Details, Greeting, HostNote, Message, Names, Ornament, TemplateFrame } from "../kit";
 
-export function WeddingElegant03({ data, guestName }: TemplateRenderProps) {
+export function WeddingElegant03({ data, guestName }: InvitationTemplateProps) {
   return (
     <TemplateFrame theme="tpl-elegant" className="items-center justify-center p-5">
       <div className="relative w-full max-w-sm overflow-hidden rounded-[2rem] bg-tpl-surface px-8 py-12 text-center shadow-float">

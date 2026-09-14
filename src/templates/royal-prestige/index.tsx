@@ -1,4 +1,4 @@
-import type { TemplateRenderProps } from "@/types";
+import type { InvitationTemplateProps } from "../contract";
 import {
   CoverGate,
   Countdown,
@@ -12,10 +12,10 @@ import {
   guestGreetingLine,
   parseEvents,
   parseGallery,
-} from "@/templates/premium/kit";
+} from "../kit";
 
 /** Template 01 — Royal Prestige: gold, ivory and deep maroon with a door reveal. */
-export function RoyalPrestige({ data, guestName, peopleCount }: TemplateRenderProps) {
+export function RoyalPrestige({ data, guestName, peopleCount }: InvitationTemplateProps) {
   const events = parseEvents(data.events);
   const gallery = parseGallery(data.galleryUrls);
   const couple = [data.groomName, data.brideName].filter(Boolean);

@@ -28,3 +28,11 @@
 - [x] Archived customers become read-only (no new guests/invitations)
 - [x] Admin templates split into Active / Inactive tabs
 - [x] Customer dashboard totals across all invitations with per-invitation breakdown
+
+## Template engine & developer contract (Sep 2026)
+- [x] Stable contract in `src/templates/contract.ts` (`InvitationTemplateProps`, `TemplateDefinition`, `defineTemplate`)
+- [x] Per-template folders with their own `template.ts` definition; legacy designs isolated in `legacy/`
+- [x] Registry rebuilt around definitions (gallery vs internal visibility, single sample source)
+- [x] Shared building blocks re-exported from `src/templates/kit`
+- [x] Developer reference template `example-basic/` (internal visibility)
+- [x] `docs/TEMPLATE_GUIDE.md` — new template development manual

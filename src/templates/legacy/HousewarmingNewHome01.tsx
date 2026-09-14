@@ -1,7 +1,7 @@
-import type { TemplateRenderProps } from "@/types";
-import { Details, Greeting, Message, TemplateFrame } from "./shared";
+import type { InvitationTemplateProps } from "../contract";
+import { Details, Greeting, Message, TemplateFrame } from "../kit";
 
-export function HousewarmingNewHome01({ data, guestName }: TemplateRenderProps) {
+export function HousewarmingNewHome01({ data, guestName }: InvitationTemplateProps) {
   return (
     <TemplateFrame theme="tpl-housewarming" className="items-center justify-center p-5">
       <div className="w-full max-w-sm rounded-[2rem] bg-tpl-surface px-8 py-12 text-center shadow-float">
