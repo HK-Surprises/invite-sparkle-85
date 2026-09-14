@@ -37,7 +37,9 @@ export function ExampleBasic({ title, data, guestName, peopleCount }: Invitation
         <Reveal delay={200}>
           <div className="mt-10">
             <h2 className="text-xs uppercase tracking-[0.25em] text-tpl-muted">Events</h2>
-            <EventsList events={events} className="mt-4" />
+            <div className="mt-4">
+              <EventsList events={events} mutedClassName="text-tpl-muted" accentClassName="text-tpl-accent" />
+            </div>
           </div>
         </Reveal>
       )}
