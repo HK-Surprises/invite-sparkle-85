@@ -1,4 +1,4 @@
-import type { InvitationTemplateProps } from "../contract";
+import type { TemplateRenderProps } from "@/types";
 import {
   CoverGate,
   Countdown,
@@ -12,10 +12,10 @@ import {
   guestGreetingLine,
   parseEvents,
   parseGallery,
-} from "../kit";
+} from "@/templates/premium/kit";
 
 /** Template 03 — Emerald Royale: deep emerald + gold, Mughal-inspired arches. */
-export function EmeraldRoyale({ data, guestName, peopleCount }: InvitationTemplateProps) {
+export function EmeraldRoyale({ data, guestName, peopleCount }: TemplateRenderProps) {
   const events = parseEvents(data.events);
   const gallery = parseGallery(data.galleryUrls);
   const couple = [data.groomName, data.brideName].filter(Boolean);

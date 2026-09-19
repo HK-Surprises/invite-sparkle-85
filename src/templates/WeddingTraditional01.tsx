@@ -1,7 +1,7 @@
-import type { InvitationTemplateProps } from "../contract";
-import { Details, Greeting, HostNote, Message, Names, Ornament, TemplateFrame } from "../kit";
+import type { TemplateRenderProps } from "@/types";
+import { Details, Greeting, HostNote, Message, Names, Ornament, TemplateFrame } from "./shared";
 
-export function WeddingTraditional01({ data, guestName }: InvitationTemplateProps) {
+export function WeddingTraditional01({ data, guestName }: TemplateRenderProps) {
   return (
     <TemplateFrame theme="tpl-traditional" className="items-center justify-center p-4">
       <div className="floral-corner relative w-full max-w-sm rounded-[1.75rem] border border-tpl-accent/50 bg-tpl-surface px-7 py-10 text-center shadow-float">

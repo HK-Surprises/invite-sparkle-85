@@ -1,4 +1,4 @@
-import type { InvitationTemplateProps } from "../contract";
+import type { TemplateRenderProps } from "@/types";
 import {
   CoverGate,
   Countdown,
@@ -12,10 +12,10 @@ import {
   guestGreetingLine,
   parseEvents,
   parseGallery,
-} from "../kit";
+} from "@/templates/premium/kit";
 
 /** Template 02 — Rose Gold Blush: romantic rose gold, blush and cream. */
-export function RoseGoldBlush({ data, guestName, peopleCount }: InvitationTemplateProps) {
+export function RoseGoldBlush({ data, guestName, peopleCount }: TemplateRenderProps) {
   const events = parseEvents(data.events);
   const gallery = parseGallery(data.galleryUrls);
   const couple = [data.groomName, data.brideName].filter(Boolean);

@@ -1,8 +1,8 @@
-import type { InvitationTemplateProps } from "../contract";
+import type { TemplateRenderProps } from "@/types";
 import { formatDate } from "@/lib/format";
-import { Greeting, HostNote, Message, Names, TemplateFrame } from "../kit";
+import { Greeting, HostNote, Message, Names, TemplateFrame } from "./shared";
 
-export function WeddingMinimal04({ data, guestName }: InvitationTemplateProps) {
+export function WeddingMinimal04({ data, guestName }: TemplateRenderProps) {
   return (
     <TemplateFrame theme="tpl-minimal" className="justify-between px-9 py-14">
       <div>

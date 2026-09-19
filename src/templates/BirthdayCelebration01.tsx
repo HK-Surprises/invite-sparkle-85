@@ -1,7 +1,7 @@
-import type { InvitationTemplateProps } from "../contract";
-import { Details, Greeting, HostNote, Message, TemplateFrame } from "../kit";
+import type { TemplateRenderProps } from "@/types";
+import { Details, Greeting, HostNote, Message, TemplateFrame } from "./shared";
 
-export function BirthdayCelebration01({ data, guestName }: InvitationTemplateProps) {
+export function BirthdayCelebration01({ data, guestName }: TemplateRenderProps) {
   return (
     <TemplateFrame theme="tpl-birthday" className="items-center justify-center p-5">
       <div className="relative w-full max-w-sm overflow-hidden rounded-[2rem] bg-tpl-surface px-8 py-12 text-center shadow-float">

@@ -1,7 +1,7 @@
-import type { InvitationTemplateProps } from "../contract";
-import { Details, Greeting, Message, Ornament, TemplateFrame } from "../kit";
+import type { TemplateRenderProps } from "@/types";
+import { Details, Greeting, Message, Ornament, TemplateFrame } from "./shared";
 
-export function ReligiousCelebration01({ data, guestName }: InvitationTemplateProps) {
+export function ReligiousCelebration01({ data, guestName }: TemplateRenderProps) {
   return (
     <TemplateFrame theme="tpl-religious" className="items-center justify-center p-5">
       <div className="w-full max-w-sm rounded-[2rem] border-4 border-double border-tpl-accent/50 bg-tpl-surface px-8 py-12 text-center shadow-float">
